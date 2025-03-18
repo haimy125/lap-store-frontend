@@ -30,6 +30,23 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="bg-gray-900 text-gray-300 ">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            (function (c, s, q, u, a, r, e) {
+              c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
+              c._hjSettings = { hjid: a };
+              r = s.getElementsByTagName('head')[0];
+              e = s.createElement('script');
+              e.async = true;
+              e.src = q + c._hjSettings.hjid + u;
+              r.appendChild(e);
+            })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 5339808);
+          `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen shadow-md`}
       >
