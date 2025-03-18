@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import ProductList from "@/app/components/ProductList";
 import { Product } from "@/interfaces";
 import { useParams, useSearchParams } from "next/navigation";
@@ -60,7 +59,7 @@ const BrandProductsPage: React.FC<Props> = () => {
 
   return (
     <div>
-      <h1 className="pt-4 text-2xl font-bold mb-4">
+      <h1 className="text-2xl font-bold mb-4">
         Sản phẩm theo thương hiệu <span className="text-red-500">{brandName}</span>
       </h1>
       <ProductList products={products} apiUrl="" pageSize={8} />

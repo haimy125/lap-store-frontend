@@ -47,18 +47,31 @@ const BrandList = () => {
   }
 
   return (
-    <div className="flex flex-row space-x-4 pt-2">
-      {" "}
-      {/* Sử dụng flex để hiển thị ngang */}
-      {brands.map((brand) => (
-        <Link
-          key={brand.brandId}
-          href={`/brands/${brand.brandId}?brandName=${encodeURIComponent(brand.brandName)}`} // Sử dụng dynamic route
-          className="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700 transition-colors duration-200"
-        >
-          {brand.brandName}
-        </Link>
-      ))}
+    <div className="relative pt-2">
+      <div className="overflow-x-auto hide-scrollbar">
+        <div className="flex flex-row space-x-4 items-center lg:justify-center">
+          {" "}
+          {brands.map((brand) => (
+            <Link
+              key={brand.brandId}
+              href={`/brands/${brand.brandId}?brandName=${encodeURIComponent(
+                brand.brandName
+              )}`}
+              className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition-colors duration-200 whitespace-nowrap inline-block shadow-md"
+            >
+              {brand.brandName}
+            </Link>
+          ))}
+        </div>
+      </div>
+      <div
+        className="absolute left-0 top-0 h-full w-12 bg-gradient-to-r from-gray-900 to-transparent"
+        style={{ pointerEvents: "none" }}
+      ></div>
+      <div
+        className="absolute right-0 top-0 h-full w-12 bg-gradient-to-l from-gray-900 to-transparent"
+        style={{ pointerEvents: "none" }}
+      ></div>
     </div>
   );
 };

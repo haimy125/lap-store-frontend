@@ -16,6 +16,7 @@ module.exports = {
         md: "768px",
         lg: "1024px",
         xl: "1280px",
+        "custom-md": "1164px",
         "2xl": "1536px",
       },
       colors: {
@@ -54,5 +55,6 @@ module.exports = {
       },
     },
   },
+  plugins: [require("tailwind-scrollbar-hide")],
   // ... các cấu hình khác
 };

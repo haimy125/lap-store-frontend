@@ -70,6 +70,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
   const [token, setToken] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [brands, setBrands] = useState<BrandDTO[]>([]);
+  // State to control visibility of the table on smaller screens
+  const [showTable, setShowTable] = useState(false);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
 
@@ -254,12 +256,29 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
     setProduct(product);
   }, []);
 
+  const toggleTableVisibility = () => {
+    setShowTable(!showTable);
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Đổi background và chữ */}
+      {/* Button to toggle table visibility - show only on small screens */}
+      <div className="md:hidden p-4">
+        <button
+          onClick={toggleTableVisibility}
+          className="cursor-pointer bg-yellow-500 hover:bg-yellow-700 text-black font-bold py-2 px-4 rounded"
+        >
+          {showTable ? "Ẩn danh sách sản phẩm" : "Hiện danh sách sản phẩm"}
+        </button>
+      </div>
       <div className="flex flex-col md:flex-row p-1">
         {/* Product Table */}
-        <div className="w-full md:w-3/5 p-1">
+        <div
+          className={`w-full md:w-3/5 p-1 ${
+            showTable ? "block" : "hidden md:block"
+          }`}
+        >
           <ProductTable
             apiUrl="http://localhost:8080/api/products/all"
             onProductSelect={handleProductSelect}
@@ -703,7 +722,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                     <img
                       src={imagePreviewUrl}
                       alt="Ảnh xem trước"
-                      className="mt-2 w-32 h-32 object-cover rounded"
+                      className="mt-2 max-w-32 max-h-32 object-cover rounded"
                     />
                   )}
                 </div>

@@ -1,8 +1,6 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { getServerCookie } from "./GetServerCookie";
 import { deleteServerCookie } from "./deleteServerCookie";
 import { jwtDecode } from "jwt-decode";
@@ -35,8 +33,11 @@ export default function Header({ onSearchResults }: HeaderProps) {
   const [maxPriceInput, setMaxPriceInput] = useState("");
 
   const router = useRouter();
+  const pathname = usePathname();
 
-  // useEffect to fetch token and set user roles on component mount
+  // Check if the current page is the product detail page
+  const isProductDetailPage = pathname?.startsWith("/products/");
+
   useEffect(() => {
     async function fetchToken() {
       try {
@@ -59,7 +60,6 @@ export default function Header({ onSearchResults }: HeaderProps) {
     fetchToken();
   }, []);
 
-  // Handler function for user logout
   const handleLogout = async () => {
     await deleteServerCookie("jwtToken");
     await deleteServerCookie("refreshToken");
@@ -67,10 +67,8 @@ export default function Header({ onSearchResults }: HeaderProps) {
     router.replace("/login");
   };
 
-  // Handler to toggle the mobile menu
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  // Handler for price range selection
   const handlePriceRangeChange = (e: any) => {
     setSelectedPriceRange(e.target.value);
     const range = priceRanges.find((r) => r.label === e.target.value);
@@ -81,7 +79,6 @@ export default function Header({ onSearchResults }: HeaderProps) {
     }
   };
 
-  // Handler for custom price search
   const handleCustomPriceSearch = () => {
     const minPrice = parseFloat(minPriceInput);
     const maxPrice = parseFloat(maxPriceInput);
@@ -93,7 +90,6 @@ export default function Header({ onSearchResults }: HeaderProps) {
     }
   };
 
-  // Function to fetch products by price range
   const fetchProductsByPriceRange = async (
     minPrice: number,
     maxPrice: number
@@ -113,19 +109,16 @@ export default function Header({ onSearchResults }: HeaderProps) {
     }
   };
 
-  // Render nothing if isLoggedIn is null (still loading)
   if (isLoggedIn === null) {
     return null;
   }
 
   return (
     <header className="fixed top-0 left-0 w-full bg-[rgba(0,0,0,0.4)] text-white shadow-xl z-50 backdrop-blur-md">
-      {/* Sử dụng black làm background và text-white để chữ màu trắng */}
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-4 flex justify-between items-center">
         {/* Logo Section */}
         <div className="flex items-center">
           <Link href="/" className="flex items-center gap-1 sm:gap-2">
-            {/* Không đổi màu logo khi hover */}
             <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-yellow-500">
               MPH - Laptop
             </span>
@@ -136,51 +129,52 @@ export default function Header({ onSearchResults }: HeaderProps) {
         </div>
 
         {/* Navigation Section (Desktop) */}
-        <nav className="hidden sm:block">
+        <nav className="hidden sm:block custom-md:block">
           <ul className="flex items-center space-x-4 sm:space-x-8">
-            <li>
-              <select
-                value={selectedPriceRange}
-                onChange={handlePriceRangeChange}
-                className="form-select cursor-pointer bg-black text-white rounded border-yellow-500 font-bold"
-                style={{ borderColor: "yellow" }}
-              >
-                {/* Price range dropdown with hover effect */}
-                <option value="">Chọn khoảng giá</option>
-                {priceRanges.map((range) => (
-                  <option key={range.label} value={range.label}>
-                    {range.label}
-                  </option>
-                ))}
-              </select>
-            </li>
-            <li className="flex items-center space-x-2">
-              <input
-                type="number"
-                placeholder="Giá tối thiểu"
-                value={minPriceInput}
-                onChange={(e) => setMinPriceInput(e.target.value)}
-                className="form-input text-white bg-black rounded border-yellow-500 font-bold"
-                style={{ borderColor: "yellow" }}
-              />
-              <input
-                type="number"
-                placeholder="Giá tối đa"
-                value={maxPriceInput}
-                onChange={(e) => setMaxPriceInput(e.target.value)}
-                className="form-input text-white bg-black rounded border-yellow-500 font-bold"
-                style={{ borderColor: "yellow" }}
-              />
-              <button
-                onClick={handleCustomPriceSearch}
-                className="btn-primary cursor-pointer relative group font-bold"
-              >
-                {/* Thêm relative và group để định vị underline */}
-                Tìm kiếm
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                {/* Gạch chân khi hover */}
-              </button>
-            </li>
+            {!isProductDetailPage && (
+              <div className="hidden md:flex items-center space-x-4">
+                <li>
+                  <select
+                    value={selectedPriceRange}
+                    onChange={handlePriceRangeChange}
+                    className="form-select cursor-pointer bg-black text-white rounded border-yellow-500 font-bold text-sm"
+                    style={{ borderColor: "yellow" }}
+                  >
+                    <option value="">Chọn khoảng giá</option>
+                    {priceRanges.map((range) => (
+                      <option key={range.label} value={range.label}>
+                        {range.label}
+                      </option>
+                    ))}
+                  </select>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    placeholder="Giá tối thiểu"
+                    value={minPriceInput}
+                    onChange={(e) => setMinPriceInput(e.target.value)}
+                    className="form-input text-white bg-black rounded border-yellow-500 font-bold text-sm"
+                    style={{ borderColor: "yellow" }}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Giá tối đa"
+                    value={maxPriceInput}
+                    onChange={(e) => setMaxPriceInput(e.target.value)}
+                    className="form-input text-white bg-black rounded border-yellow-500 font-bold text-sm"
+                    style={{ borderColor: "yellow" }}
+                  />
+                  <button
+                    onClick={handleCustomPriceSearch}
+                    className="btn-primary cursor-pointer relative group font-bold text-sm"
+                  >
+                    Tìm kiếm
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
+                  </button>
+                </li>
+              </div>
+            )}
 
             {/* Authentication Links */}
             {isLoggedIn ? (
@@ -189,35 +183,29 @@ export default function Header({ onSearchResults }: HeaderProps) {
                   <li>
                     <Link
                       href="/dashboard"
-                      className="nav-link relative group text-white font-bold"
+                      className="nav-link relative group text-white font-bold text-sm"
                     >
-                      {/* Thêm relative và group để định vị underline */}
                       Dashboard
                       <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                      {/* Gạch chân khi hover */}
                     </Link>
                   </li>
                 )}
                 <li>
                   <Link
                     href="/profile"
-                    className="nav-link relative group text-white font-bold"
+                    className="nav-link relative group text-white font-bold text-sm"
                   >
-                    {/* Thêm relative và group để định vị underline */}
                     Profile
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                    {/* Gạch chân khi hover */}
                   </Link>
                 </li>
                 <li>
                   <button
                     onClick={handleLogout}
-                    className="btn-secondary cursor-pointer relative group font-bold"
+                    className="btn-secondary cursor-pointer relative group font-bold text-sm"
                   >
-                    {/* Thêm relative và group để định vị underline */}
                     Logout
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                    {/* Gạch chân khi hover */}
                   </button>
                 </li>
               </>
@@ -225,12 +213,10 @@ export default function Header({ onSearchResults }: HeaderProps) {
               <li>
                 <Link
                   href="/login"
-                  className="btn-primary cursor-pointer relative group font-bold"
+                  className="btn-primary cursor-pointer relative group font-bold text-sm"
                 >
-                  {/* Thêm relative và group để định vị underline */}
                   Login
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                  {/* Gạch chân khi hover */}
                 </Link>
               </li>
             )}
@@ -274,49 +260,54 @@ export default function Header({ onSearchResults }: HeaderProps) {
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
                   </Link>
                 </li>
-                <li>
-                  <select
-                    value={selectedPriceRange}
-                    onChange={handlePriceRangeChange}
-                    className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black cursor-pointer font-bold"
-                    style={{ borderColor: "yellow" }}
-                  >
-                    <option value="">Chọn khoảng giá</option>
-                    {priceRanges.map((range) => (
-                      <option key={range.label} value={range.label}>
-                        {range.label}
-                      </option>
-                    ))}
-                  </select>
-                </li>
-                <li>
-                  <div className="flex flex-col">
-                    <input
-                      type="number"
-                      placeholder="Giá tối thiểu"
-                      value={minPriceInput}
-                      onChange={(e) => setMinPriceInput(e.target.value)}
-                      className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black border-yellow-500 font-bold"
-                      style={{ borderColor: "yellow" }}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Giá tối đa"
-                      value={maxPriceInput}
-                      onChange={(e) => setMaxPriceInput(e.target.value)}
-                      className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black border-yellow-500 font-bold"
-                      style={{ borderColor: "yellow" }}
-                    />
-                    <button
-                      onClick={handleCustomPriceSearch}
-                      className="cursor-pointer block px-4 py-2 text-black hover:bg-yellow-600 w-full text-left bg-yellow-500 transition-colors duration-200 font-bold relative group"
-                    >
-                      {/* Mobile custom search button with hover effect */}
-                      Tìm kiếm
-                      <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
-                    </button>
-                  </div>
-                </li>
+                {!isProductDetailPage && (
+                  <>
+                    {/* Mobile Price Search - Always Visible in Mobile Menu */}
+                    <li>
+                      <select
+                        value={selectedPriceRange}
+                        onChange={handlePriceRangeChange}
+                        className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black cursor-pointer font-bold"
+                        style={{ borderColor: "yellow" }}
+                      >
+                        <option value="">Chọn khoảng giá</option>
+                        {priceRanges.map((range) => (
+                          <option key={range.label} value={range.label}>
+                            {range.label}
+                          </option>
+                        ))}
+                      </select>
+                    </li>
+                    <li>
+                      <div className="flex flex-col">
+                        <input
+                          type="number"
+                          placeholder="Giá tối thiểu"
+                          value={minPriceInput}
+                          onChange={(e) => setMinPriceInput(e.target.value)}
+                          className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black border-yellow-500 font-bold"
+                          style={{ borderColor: "yellow" }}
+                        />
+                        <input
+                          type="number"
+                          placeholder="Giá tối đa"
+                          value={maxPriceInput}
+                          onChange={(e) => setMaxPriceInput(e.target.value)}
+                          className="block px-4 py-2 text-white hover:bg-gray-800 w-full text-left bg-black border-yellow-500 font-bold"
+                          style={{ borderColor: "yellow" }}
+                        />
+                        <button
+                          onClick={handleCustomPriceSearch}
+                          className="cursor-pointer block px-4 py-2 text-black hover:bg-yellow-600 w-full text-left bg-yellow-500 transition-colors duration-200 font-bold relative group"
+                        >
+                          {/* Mobile custom search button with hover effect */}
+                          Tìm kiếm
+                          <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-yellow-500 transition-all duration-300 group-hover:w-full"></span>
+                        </button>
+                      </div>
+                    </li>
+                  </>
+                )}
                 {isLoggedIn ? (
                   <>
                     {isAdmin && (

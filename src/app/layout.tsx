@@ -33,7 +33,7 @@ export default function RootLayout({
         <Header />
         <Breadcrumbs />
         <main
-          className={`pt-16 flex-grow ${
+          className={`pt-8 sm:pt-16 flex-grow ${
             isDashboardPage ? "" : "container mx-auto max-w-7xl px-4"
           }`}
         >

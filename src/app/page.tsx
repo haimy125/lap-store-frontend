@@ -33,7 +33,7 @@ function Home() {
   return (
     <div className="">
       <Header onSearchResults={handleSearchResults} />
-      <div className="mx-auto w-fit">
+      <div className="mx-auto w-full">
         <BrandList />
       </div>
       <ProductList products={searchResults} apiUrl={apiUrl} pageSize={8} />
