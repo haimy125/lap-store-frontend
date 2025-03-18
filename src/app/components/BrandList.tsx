@@ -8,6 +8,8 @@ interface Brand {
   brandName: string;
 }
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+
 const BrandList = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,7 +21,7 @@ const BrandList = () => {
       setError(null);
 
       try {
-        const response = await fetch("http://localhost:8080/api/brands/all");
+        const response = await fetch(`${API_URL}/api/brands/all`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
@@ -27,12 +29,14 @@ const BrandList = () => {
 
         const data: Brand[] = await response.json();
         setBrands(data);
-      } catch (e: unknown) {
+      } catch (e) {
         if (e instanceof Error) {
           setError(e.message);
         } else {
           setError("An unknown error occurred.");
         }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -48,8 +52,8 @@ const BrandList = () => {
   }
 
   return (
-    <div className="relative pt-2">
-      <div className="overflow-x-auto hide-scrollbar">
+    <div className="relative pt-2 snap-x snap-mandatory">
+      <div className="overflow-x-auto hide-scrollbar snap-mandatory snap-x">
         <div className="flex flex-row space-x-4 items-center lg:justify-center">
           {" "}
           {brands.map((brand) => (
@@ -58,7 +62,7 @@ const BrandList = () => {
               href={`/brands/${brand.brandId}?brandName=${encodeURIComponent(
                 brand.brandName
               )}`}
-              className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition-colors duration-200 whitespace-nowrap inline-block shadow-md"
+              className="px-4 py-2 bg-gray-700 text-gray-100 rounded-lg hover:bg-gray-600 transition-colors duration-200 whitespace-nowrap inline-block shadow-md snap-start"
             >
               {brand.brandName}
             </Link>
