@@ -4,38 +4,11 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Cookies from "js-cookie";
 import { getServerCookie } from "@/app/components/GetServerCookie";
 import ProductTable from "./ProductTable";
+import { Product } from "@/types/product";
+import { BrandDTO } from "@/types/brand";
 
 interface ProductFormProps {
   onProductCreated: () => void;
-}
-
-interface Product {
-  idProduct: number;
-  brand: number;
-  modelName: string;
-  cpu: string;
-  ram: string;
-  ssd: string;
-  gpu: string;
-  screen: string;
-  battery: string;
-  price: number;
-  location: string;
-  touchscreen: boolean;
-  convertible: boolean;
-  grade: string;
-  keyboardLed: boolean;
-  numpad: boolean;
-  fullFunction: boolean;
-  notes: string;
-  imageUrl: string;
-  warranty: string;
-  enabled: boolean; // Thêm trường enabled
-}
-
-interface BrandDTO {
-  brandId: number;
-  brandName: string;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
@@ -53,14 +26,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
     location: "",
     touchscreen: false,
     convertible: false,
-    grade: "Like New", // Giá trị mặc định
+    grade: "Like New",
     keyboardLed: false,
     numpad: false,
     fullFunction: true,
     notes: "Không có",
     imageUrl: "",
     warranty: "3 tháng tại cửa hàng",
-    enabled: true, // Giá trị mặc định là true
+    enabled: true,
   });
 
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -70,7 +43,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
   const [token, setToken] = useState<string | null>(null);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [brands, setBrands] = useState<BrandDTO[]>([]);
-  // State to control visibility of the table on smaller screens
   const [showTable, setShowTable] = useState(false);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -94,8 +66,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
         }
         const data: BrandDTO[] = await response.json();
         setBrands(data);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unknown error occurred");
+        }
       }
     }
 
@@ -108,7 +84,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const { name, value, type, checked } = e.target;
+    const target = e.target as HTMLInputElement;
+    const { name, value, type } = target;
+    const checked = type === "checkbox" ? target.checked : undefined;
 
     setProduct({
       ...product,
@@ -148,7 +126,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
     setLoading(true);
     setError(null);
 
-    // Trim all string values in the product object
     const trimmedProduct: Product = {
       ...product,
       modelName: product.modelName.trim(),
@@ -208,7 +185,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
         return;
       }
 
-      const responseData: Product = await response.json();
+      await response.json();
 
       onProductCreated();
 
@@ -235,7 +212,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
         notes: "Không có",
         imageUrl: "",
         warranty: "3 tháng tại cửa hàng",
-        enabled: true, // Reset enabled về true
+        enabled: true,
       });
       setImageFile(null);
       setSelectedProduct(null);
@@ -244,8 +221,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
       if (imageInputRef.current) {
         imageInputRef.current.value = "";
       }
-    } catch (e: any) {
-      setError(e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -262,8 +243,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Đổi background và chữ */}
-      {/* Button to toggle table visibility - show only on small screens */}
       <div className="md:hidden p-4">
         <button
           onClick={toggleTableVisibility}
@@ -273,7 +252,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
         </button>
       </div>
       <div className="flex flex-col md:flex-row p-1">
-        {/* Product Table */}
         <div
           className={`w-full md:w-3/5 p-1 ${
             showTable ? "block" : "hidden md:block"
@@ -285,10 +263,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
           />
         </div>
 
-        {/* Product Form */}
         <div className="w-full md:w-2/5 p-1">
           <div className="w-full bg-gray-900 rounded-xl shadow-lg overflow-hidden">
-            {/* Đổi background */}
             <div className="px-8 py-10">
               <h2 className="text-2xl font-semibold text-yellow-500 text-center mb-8">
                 {selectedProduct ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới"}
@@ -299,12 +275,10 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                     className="bg-red-700 border border-red-900 text-white px-4 py-3 rounded relative"
                     role="alert"
                   >
-                    {/* Đổi background và chữ */}
                     <span className="block sm:inline">{error}</span>
                   </div>
                 )}
 
-                {/* Brand */}
                 <div>
                   <label
                     htmlFor="brand"
@@ -321,7 +295,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                       required
                       className="shadow-sm focus:ring-yellow-500 focus:border-yellow-500 block w-full sm:text-sm border-gray-700 rounded-md py-2 px-3 bg-gray-800 text-white"
                     >
-                      {/* Đổi màu border và background */}
                       <option value="">Chọn thương hiệu</option>
                       {brands.map((brand) => (
                         <option key={brand.brandId} value={brand.brandId}>
@@ -332,7 +305,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Model Name */}
                 <div>
                   <label
                     htmlFor="modelName"
@@ -353,7 +325,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* CPU */}
                 <div>
                   <label
                     htmlFor="cpu"
@@ -374,7 +345,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* RAM */}
                 <div>
                   <label
                     htmlFor="ram"
@@ -395,7 +365,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* SSD */}
                 <div>
                   <label
                     htmlFor="ssd"
@@ -416,7 +385,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* GPU */}
                 <div>
                   <label
                     htmlFor="gpu"
@@ -437,7 +405,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Screen */}
                 <div>
                   <label
                     htmlFor="screen"
@@ -458,7 +425,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Battery */}
                 <div>
                   <label
                     htmlFor="battery"
@@ -479,7 +445,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Price */}
                 <div>
                   <label
                     htmlFor="price"
@@ -500,7 +465,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Location */}
                 <div>
                   <label
                     htmlFor="location"
@@ -521,7 +485,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Warranty */}
                 <div>
                   <label
                     htmlFor="warranty"
@@ -541,7 +504,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Grade */}
                 <div>
                   <label
                     htmlFor="grade"
@@ -561,7 +523,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Checkboxes */}
                 <div>
                   <div className="flex flex-col space-y-3">
                     <label htmlFor="touchscreen" className="flex items-center">
@@ -573,7 +534,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                         onChange={handleChange}
                         className="form-checkbox h-5 w-5 text-yellow-400 focus:ring-yellow-500 focus:border-yellow-500 shadow-sm rounded mr-2"
                       />
-                      {/* Đổi màu checkbox */}
                       <span className="text-sm text-yellow-300 font-medium">
                         Cảm ứng
                       </span>
@@ -635,7 +595,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                       </span>
                     </label>
 
-                    {/* Enabled */}
                     <label htmlFor="enabled" className="flex items-center">
                       <input
                         type="checkbox"
@@ -652,7 +611,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Notes */}
                 <div>
                   <label
                     htmlFor="notes"
@@ -672,7 +630,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Image URL */}
                 <div>
                   <label
                     htmlFor="imageUrl"
@@ -692,7 +649,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Image Upload */}
                 <div>
                   <label
                     htmlFor="image"
@@ -713,7 +669,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   </div>
                 </div>
 
-                {/* Image Preview */}
                 <div>
                   <label className="block text-sm font-medium text-yellow-300">
                     Hình ảnh xem trước
@@ -727,7 +682,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                   )}
                 </div>
 
-                {/* Submit Button */}
                 <div>
                   <button
                     type="submit"

@@ -1,4 +1,3 @@
-// components/BrandList.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -28,10 +27,12 @@ const BrandList = () => {
 
         const data: Brand[] = await response.json();
         setBrands(data);
-      } catch (e: any) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("An unknown error occurred.");
+        }
       }
     };
 

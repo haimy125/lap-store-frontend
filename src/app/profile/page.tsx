@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getServerCookie } from "@/app/components/GetServerCookie";
 import { redirect } from "next/navigation";
-import { FaPhone, FaEnvelope, FaUser, FaAddressCard } from "react-icons/fa"; // Thêm các icon
+import { FaPhone, FaEnvelope, FaUser, FaAddressCard } from "react-icons/fa";
 
 interface UserDTO {
   userId: number;

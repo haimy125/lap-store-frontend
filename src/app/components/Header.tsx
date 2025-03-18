@@ -1,12 +1,19 @@
+// src/app/components/Header.tsx
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { getServerCookie } from "./GetServerCookie";
 import { deleteServerCookie } from "./deleteServerCookie";
-import { jwtDecode } from "jwt-decode";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 interface HeaderProps {
   onSearchResults: (results: any[]) => void;
+}
+
+// Khai báo một interface cho JWT payload của bạn
+interface MyJwtPayload extends JwtPayload {
+  role: string[]; // Thay đổi 'string' nếu kiểu dữ liệu của role khác
+  // Thêm các claims khác nếu cần
 }
 
 const priceRanges = [
@@ -47,7 +54,8 @@ export default function Header({ onSearchResults }: HeaderProps) {
           return;
         }
 
-        const decodedToken = jwtDecode(serverToken);
+        // Ép kiểu decodedToken về MyJwtPayload
+        const decodedToken = jwtDecode<MyJwtPayload>(serverToken);
         const roles = decodedToken.role;
 
         setIsLoggedIn(!!serverToken);
@@ -112,7 +120,6 @@ export default function Header({ onSearchResults }: HeaderProps) {
   if (isLoggedIn === null) {
     return null;
   }
-
   return (
     <header className="fixed top-0 left-0 w-full bg-[rgba(0,0,0,0.4)] text-white shadow-xl z-50 backdrop-blur-md">
       <div className="container max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-4 flex justify-between items-center">

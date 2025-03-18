@@ -1,4 +1,3 @@
-// app/brands/[brandId]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,9 +5,8 @@ import ProductList from "@/app/components/ProductList";
 import { Product } from "@/interfaces";
 import { useParams, useSearchParams } from "next/navigation";
 
-interface Props {}
-
-const BrandProductsPage: React.FC<Props> = () => {
+const BrandProductsPage: React.FC = () => {
+  // Sửa khai báo component
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -35,8 +33,13 @@ const BrandProductsPage: React.FC<Props> = () => {
 
         const data: Product[] = await response.json();
         setProducts(data);
-      } catch (e: any) {
-        setError(e.message);
+      } catch (e: unknown) {
+        // Thay 'Error' bằng 'unknown'
+        if (e instanceof Error) {
+          setError(e.message);
+        } else {
+          setError("An unknown error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -60,7 +63,8 @@ const BrandProductsPage: React.FC<Props> = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">
-        Sản phẩm theo thương hiệu <span className="text-red-500">{brandName}</span>
+        Sản phẩm theo thương hiệu{" "}
+        <span className="text-red-500">{brandName}</span>
       </h1>
       <ProductList products={products} apiUrl="" pageSize={8} />
     </div>

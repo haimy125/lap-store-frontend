@@ -1,4 +1,3 @@
-// src/interfaces.ts
 export interface Product {
   idProduct: number;
   brand: number;
@@ -22,9 +21,4 @@ export interface Product {
   imageUrl: string;
   warranty: string;
   enabled: boolean;
-}
-
-export interface BrandDTO {
-  brandId: number;
-  brandName: string;
 }

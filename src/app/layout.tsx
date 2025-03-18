@@ -1,4 +1,4 @@
-// src/app/layout.tsx (Client Component)
+// src/app/layout.tsx
 "use client";
 
 import { Geist, Geist_Mono } from "next/font/google";
@@ -7,6 +7,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import Breadcrumbs from "@/app/components/Breadcrumbs";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
+import { Product } from "@/types/product";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,13 +26,15 @@ export default function RootLayout({
   const pathname = usePathname();
   const isDashboardPage = pathname === "/dashboard";
 
+  const [, setSearchResults] = useState<Product[]>([]);
+
   return (
     <html lang="en" className="bg-gray-900 text-gray-300 ">
-      {/* Thêm bg-gray-800 và text-gray-300 vào html để có nền xám đậm và chữ xám nhạt mặc định */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen shadow-md`}
       >
-        <Header />
+        <Header onSearchResults={setSearchResults} />{" "}
+        {/* Pass the state updater function */}
         <Breadcrumbs />
         <main
           className={`pt-8 sm:pt-16 flex-grow ${
