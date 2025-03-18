@@ -16,7 +16,7 @@ const Breadcrumbs = () => {
   const breadcrumbs: Breadcrumb[] = [{ label: "Home", href: "/" }];
 
   let currentPath = "";
-  pathSegments.forEach((segment, index) => {
+  pathSegments.forEach((segment) => {
     currentPath += `/${segment}`;
     breadcrumbs.push({
       label: segment.charAt(0).toUpperCase() + segment.slice(1), // Viết hoa chữ cái đầu

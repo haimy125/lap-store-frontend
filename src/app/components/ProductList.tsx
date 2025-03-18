@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Product } from "@/interfaces"; // Import interface Product
 
 interface ProductResponse {
@@ -49,7 +50,6 @@ const ProductList: React.FC<ProductListProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const [isSearch, setIsSearch] = useState(false);
 
   const phoneNumber = "0976540201";
 
@@ -70,7 +70,6 @@ const ProductList: React.FC<ProductListProps> = ({
     const fetchProducts = async () => {
       setLoading(true);
       setError(null);
-      setIsSearch(false);
 
       try {
         const response = await fetch(
@@ -84,9 +83,13 @@ const ProductList: React.FC<ProductListProps> = ({
         const data: ProductResponse = await response.json();
         setAllProducts(data.content); // Cập nhật allProducts với data.content từ trang mới
         setTotalPages(data.totalPages);
-        console.log("API Total Pages:", data.totalPages); // Log giá trị trả về từ API
-      } catch (e: any) {
-        setError(e.message);
+        console.log("API Total Pages:", data.totalPages);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unexpected error occurred");
+        }
       } finally {
         setLoading(false);
       }
@@ -130,10 +133,13 @@ const ProductList: React.FC<ProductListProps> = ({
               href={`/products/${product.idProduct}`} // Giữ nguyên, idProduct đã là number
               className="flex flex-col h-full"
             >
-              <img
+              <Image
                 src={product.imageUrl}
                 alt={product.modelName}
+                width={300}
+                height={200}
                 className="w-full h-32 sm:h-48 object-cover"
+                priority
               />
               <div className="p-2 sm:p-4 flex flex-col justify-between flex-grow">
                 <div>

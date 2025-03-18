@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import Header from "./compo/Header";
 import Sidebar from "./compo/Sidebar";
 import ProductForm from "./compo/ProductForm";
 
@@ -37,7 +36,8 @@ const DashboardPage = () => {
                   Quản lý sản phẩm
                 </h3>
                 <ProductForm
-                  onProductCreated={handleProductCreated} // Pass the callback
+                  key={key}
+                  onProductCreated={handleProductCreated}
                 />
               </div>
             )}

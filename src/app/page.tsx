@@ -6,13 +6,14 @@ import { getServerCookie } from "./components/GetServerCookie";
 import ProductList from "./components/ProductList";
 import Header from "./components/Header";
 import BrandList from "./components/BrandList";
+import { Product } from "@/types/product";
 
 function Home() {
-  const [token, setToken] = useState<string | null>(null);
-  const [searchResults, setSearchResults] = useState([]);
+  const [, setToken] = useState<string | null>(null);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
   const apiUrl = "http://localhost:8080/api/products/all";
 
-  const handleSearchResults = (results) => {
+  const handleSearchResults = (results: Product[]) => {
     setSearchResults(results);
   };
 

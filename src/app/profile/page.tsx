@@ -56,8 +56,12 @@ const ProfilePage = () => {
         const data: UserDTO = await response.json();
         setUser(data);
         setTempUser({ ...data }); // Initialize tempUser with fetched data
-      } catch (e: any) {
-        setError(e.message || "Failed to fetch profile");
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("Failed to fetch profile");
+        }
       } finally {
         setLoading(false);
       }
@@ -115,8 +119,12 @@ const ProfilePage = () => {
       setTempUser({ ...data });
       setIsEditing(false); // Exit editing mode after successful update
       setSuccessMessage("Cập nhật thông tin thành công!");
-    } catch (e: any) {
-      setError(e.message || "Failed to update profile");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Failed to update profile");
+      }
     } finally {
       setLoading(false);
     }

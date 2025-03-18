@@ -11,15 +11,13 @@ const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     async function checkLoginStatus() {
-      const token = await getServerCookie("jwtToken"); // Lấy token từ server
+      const token = await getServerCookie("jwtToken");
       if (token) {
-        setIsLoggedIn(true);
-        router.push("/"); // Nếu đã đăng nhập, chuyển hướng về trang chủ
+        router.push("/");
       }
     }
     checkLoginStatus();
@@ -56,8 +54,12 @@ const LoginForm = () => {
       await setServerCookie("refreshToken", data.token, 30);
 
       router.push("/");
-    } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Đã có lỗi xảy ra");
+      }
     }
   };
 

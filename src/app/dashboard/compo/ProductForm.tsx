@@ -6,6 +6,7 @@ import { getServerCookie } from "@/app/components/GetServerCookie";
 import ProductTable from "./ProductTable";
 import { Product } from "@/types/product";
 import { BrandDTO } from "@/types/brand";
+import Image from "next/image";
 
 interface ProductFormProps {
   onProductCreated: () => void;
@@ -674,9 +675,11 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
                     Hình ảnh xem trước
                   </label>
                   {imagePreviewUrl && (
-                    <img
+                    <Image
                       src={imagePreviewUrl}
                       alt="Ảnh xem trước"
+                      width={128}
+                      height={128}
                       className="mt-2 max-w-32 max-h-32 object-cover rounded"
                     />
                   )}

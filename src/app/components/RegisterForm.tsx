@@ -46,8 +46,12 @@ const RegisterForm = () => {
       }
 
       router.push("/login");
-    } catch (err: any) {
-      setError(err.message || "Đã có lỗi xảy ra");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("Đã có lỗi xảy ra");
+      }
     }
   };
 

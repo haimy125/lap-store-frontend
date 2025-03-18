@@ -5,9 +5,10 @@ import { useRouter, usePathname } from "next/navigation";
 import { getServerCookie } from "./GetServerCookie";
 import { deleteServerCookie } from "./deleteServerCookie";
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { Product } from "@/types/product";
 
 interface HeaderProps {
-  onSearchResults: (results: any[]) => void;
+  onSearchResults: (results: Product[]) => void;
 }
 
 // Khai báo một interface cho JWT payload của bạn
@@ -77,7 +78,7 @@ export default function Header({ onSearchResults }: HeaderProps) {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
-  const handlePriceRangeChange = (e: any) => {
+  const handlePriceRangeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedPriceRange(e.target.value);
     const range = priceRanges.find((r) => r.label === e.target.value);
     if (range) {

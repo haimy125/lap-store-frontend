@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface Product {
   idProduct: number;
@@ -49,7 +50,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
           throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
         }
 
-        // Kiểm tra Content-Type
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("application/json")) {
           throw new Error(
@@ -60,7 +60,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
         try {
           const data: Product = await response.json();
 
-          // Loại bỏ khoảng trắng thừa từ các trường chuỗi
           const trimmedData: Product = {
             ...data,
             brandName: data.brandName.trim(),
@@ -78,23 +77,14 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
           };
 
           setProduct(trimmedData);
-        } catch (jsonError: any) {
+        } catch (jsonError: unknown) {
           console.error("Lỗi phân tích cú pháp JSON:", jsonError);
           setError("Lỗi phân tích cú pháp JSON từ server");
         }
-      } catch (e: any) {
-        console.error("Lỗi Fetch:", e); // Log lỗi fetch để debug
-        setError(e.message);
-
-        // Cung cấp thông báo lỗi cụ thể hơn
-        if (e.message.startsWith("Lỗi HTTP")) {
-          setError(`Server trả về lỗi: ${e.message}`);
-        } else if (
-          e.message.startsWith("Mong đợi kiểu dữ liệu application/json")
-        ) {
-          setError(
-            "Server trả về dữ liệu ở định dạng không mong đợi. Vui lòng kiểm tra API."
-          );
+      } catch (error: unknown) {
+        console.error("Lỗi Fetch:", error);
+        if (error instanceof Error) {
+          setError(error.message);
         } else {
           setError("Không thể tải chi tiết sản phẩm.");
         }
@@ -130,16 +120,18 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
       {/* Set text color to yellow-300 for the entire component */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div>
-          <img
+          <Image
             src={product.imageUrl}
             alt={product.modelName}
+            width={500}
+            height={300}
             className="w-full rounded-lg shadow-md"
+            priority
           />
         </div>
         <div>
           <h2 className="text-3xl font-extrabold text-yellow-500 mb-4 text-shadow">
             {" "}
-            {/* Tên sản phẩm nổi bật hơn - yellow - có shadow*/}
             {product.brandName} {product.modelName}
           </h2>
           <p className="mb-2">
@@ -247,7 +239,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
             <span className="text-red-500 font-bold text-shadow">
               {product.price.toLocaleString()} VNĐ
             </span>{" "}
-            {/* Giá nổi bật hơn - đỏ - có shadow*/}
           </p>
         </div>
       </div>

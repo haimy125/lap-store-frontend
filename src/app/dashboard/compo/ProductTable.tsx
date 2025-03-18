@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 import { getServerCookie } from "@/app/components/GetServerCookie";
 import { Product } from "@/types/product";
+import Image from "next/image";
 
 interface ProductResponse {
   content: Product[];
@@ -69,8 +70,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
       const data: ProductResponse = await response.json();
       setProducts(data.content);
       setTotalPages(data.totalPages);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -140,8 +145,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
 
       console.log("Product deleted successfully!");
       fetchProducts(); // Gọi lại fetchProducts sau khi xóa thành công
-    } catch (e: any) {
-      setError(e.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -202,9 +211,11 @@ const ProductTable: React.FC<ProductTableProps> = ({
               >
                 {/* Đổi màu hover */}
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                  <img
+                  <Image
                     src={product.imageUrl}
                     alt={product.modelName}
+                    width={40}
+                    height={40}
                     className="w-10 h-10 object-cover rounded-md"
                   />
                 </td>
