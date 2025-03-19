@@ -14,6 +14,7 @@ const RegisterForm = () => {
   const [address, setAddress] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ const RegisterForm = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/auth/register",
+        `${API_BASE_URL}/api/v1/auth/register`,
         {
           method: "POST",
           headers: {

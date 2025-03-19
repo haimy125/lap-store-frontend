@@ -14,6 +14,7 @@ const BrandProductsPage: React.FC = () => {
   const searchParams = useSearchParams();
 
   const brandName = searchParams.get("brandName") || "Unknown Brand";
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     const fetchProductsByBrand = async () => {
@@ -23,9 +24,7 @@ const BrandProductsPage: React.FC = () => {
       setError(null);
 
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/brands/${brandId}`
-        );
+        const response = await fetch(`${API_BASE_URL}/api/brands/${brandId}`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

@@ -25,6 +25,8 @@ const ProfilePage = () => {
   const [tempUser, setTempUser] = useState<UserDTO | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true);
@@ -37,7 +39,7 @@ const ProfilePage = () => {
           redirect("/login"); // Redirect if no token
           return;
         }
-        const response = await fetch("http://localhost:8080/api/user/current", {
+        const response = await fetch(`${API_BASE_URL}/api/user/current`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -97,7 +99,7 @@ const ProfilePage = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/api/user/${tempUser.userId}/update`,
+        `${API_BASE_URL}/api/user/${tempUser.userId}/update`,
         {
           method: "POST",
           headers: {

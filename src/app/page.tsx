@@ -9,9 +9,12 @@ import BrandList from "./components/BrandList";
 import { Product } from "@/types/product";
 
 function Home() {
+  
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   const [, setToken] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<Product[]>([]);
-  const apiUrl = "http://localhost:8080/api/products/all";
+  const apiUrl = `${API_BASE_URL}/api/products/all`;
 
   const handleSearchResults = (results: Product[]) => {
     setSearchResults(results);

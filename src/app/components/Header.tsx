@@ -33,6 +33,9 @@ const priceRanges = [
 
 export default function Header({ onSearchResults }: HeaderProps) {
   // State variables
+
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -105,7 +108,7 @@ export default function Header({ onSearchResults }: HeaderProps) {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/api/products/price-range?minPrice=${minPrice}&maxPrice=${maxPrice}`
+        `${API_BASE_URL}/api/products/price-range?minPrice=${minPrice}&maxPrice=${maxPrice}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

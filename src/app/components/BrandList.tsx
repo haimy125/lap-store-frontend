@@ -7,8 +7,7 @@ interface Brand {
   brandId: number;
   brandName: string;
 }
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const BrandList = () => {
   const [brands, setBrands] = useState<Brand[]>([]);
@@ -21,7 +20,7 @@ const BrandList = () => {
       setError(null);
 
       try {
-        const response = await fetch(`${API_URL}/api/brands/all`);
+        const response = await fetch(`${API_BASE_URL}/api/brands/all`);
 
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);

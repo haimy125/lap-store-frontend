@@ -12,6 +12,8 @@ interface ProductFormProps {
   onProductCreated: () => void;
 }
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
   const [product, setProduct] = useState<Product>({
     idProduct: 0,
@@ -61,7 +63,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
 
     async function fetchBrands() {
       try {
-        const response = await fetch("http://localhost:8080/api/brands/all");
+        const response = await fetch(`${API_BASE_URL}/api/brands/all`);
         if (!response.ok) {
           throw new Error(`Failed to fetch brands: ${response.status}`);
         }
@@ -159,8 +161,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
       }
 
       const endpoint = selectedProduct
-        ? `http://localhost:8080/admin/api/products/${selectedProduct.idProduct}/update`
-        : "http://localhost:8080/admin/api/products/add";
+        ? `${API_BASE_URL}/admin/api/products/${selectedProduct.idProduct}/update`
+        : `${API_BASE_URL}/admin/api/products/add`;
 
       const method = selectedProduct ? "PUT" : "POST";
 
@@ -259,7 +261,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated }) => {
           }`}
         >
           <ProductTable
-            apiUrl="http://localhost:8080/api/products/all"
+            apiUrl={`${API_BASE_URL}/api/products/all`}
             onProductSelect={handleProductSelect}
           />
         </div>

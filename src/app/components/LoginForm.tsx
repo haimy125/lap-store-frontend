@@ -12,6 +12,7 @@ const LoginForm = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   useEffect(() => {
     async function checkLoginStatus() {
@@ -29,7 +30,7 @@ const LoginForm = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/api/v1/auth/authenticate",
+        `${API_BASE_URL}/api/v1/auth/authenticate`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -64,7 +65,7 @@ const LoginForm = () => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
+    window.location.href = `${API_BASE_URL}/oauth2/authorization/google`;
   };
 
   return (

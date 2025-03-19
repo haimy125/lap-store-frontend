@@ -30,7 +30,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className="bg-gray-900 text-gray-300 ">
-      <head>
+      {/* <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -46,7 +46,7 @@ export default function RootLayout({
           `,
           }}
         />
-      </head>
+      </head> */}
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen shadow-md`}
       >

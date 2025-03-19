@@ -53,6 +53,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
   const [token, setToken] = useState<string | null>(null);
   const pageSize = 10;
 
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
   const handleRowClick = (product: Product) => {
     onProductSelect(product);
   };
@@ -123,7 +125,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
       console.log("Token:", token);
 
       const response = await fetch(
-        `http://localhost:8080/admin/api/products/${idString}/delete`,
+        `${API_BASE_URL}/admin/api/products/${idString}/delete`,
         {
           method: "DELETE",
           headers: {

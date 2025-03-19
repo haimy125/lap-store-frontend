@@ -36,7 +36,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   useEffect(() => {
     const fetchProduct = async () => {
       setLoading(true);
@@ -44,7 +44,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ idProduct }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/api/products/${idProduct}`
+          `${API_BASE_URL}/api/products/${idProduct}`
         );
         if (!response.ok) {
           throw new Error(`Lỗi HTTP! Trạng thái: ${response.status}`);
